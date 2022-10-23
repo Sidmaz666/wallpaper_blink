@@ -1,0 +1,29 @@
+#!/bin/bash
+
+QUERY=$1
+LIM=$2
+RES="1920x1200"
+PAGE=$3
+DIR=$4
+
+[[  $1 == "r" ]] || [[ $1 == "random" ]] && QUERY=""
+[[ -z $2 ]] && LIM=10
+[[ $2 == "full" ]] && LIM=""
+[[ -z $3 ]] && PAGE=1
+[[ -z $4 ]] && DIR=$(pwd)
+
+num=1
+
+for pg in $(seq 1 $PAGE)
+do 
+
+for i in $(curl -s "https://wallhaven.cc/api/v1/search?q=$QUERY&atleast=$RES&categories=111&purity=111&sorting=relevance&order=desc&page=$pg" | jq '.data[]?|.path' )
+do
+  	i=$(echo $i | sed 's/\"//g')
+	curl -O $i --output-dir $DIR
+	[[ $LIM == $num ]] && break
+	num=$(($num+1))
+done
+num=1
+done
+

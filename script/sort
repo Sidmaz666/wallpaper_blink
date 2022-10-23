@@ -1,0 +1,19 @@
+#!/bin/bash
+
+SORT=$1
+DIR=$2
+MDIR=$3
+
+[[ -z $1 ]] || [[ -z $2 ]] || [[ -z $3 ]] && exit
+
+num=1
+
+mkdir -p $MDIR
+
+for i in $(ls $DIR | grep ".$SORT" | sort -g)
+do 
+  mv $DIR/$i $MDIR/$num.$SORT
+  num=$(echo $(($num+1)))
+done
+
+
